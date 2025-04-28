@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Target Detection Interface</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+  <div class="container">
+    <!-- ─────────── Survivors ─────────── -->
+    <div class="section" id="targets-section">
+      <h2>Survivors</h2>
+      <div class="scrollable-list">
+        {% for target in targets %}
+        <div class="item">
+          <div class="image-container">
+            <img src="{{ url_for('serve_image', filename=target.image) }}"
+                 alt="Survivor {{ target.id }}"
+                 onerror="this.src='{{ url_for('static', filename='images/placeholder.jpg') }}'">
+          </div>
+          <div class="coordinates">
+            <p>X: {{ target.x }}</p>
+            <p>Y: {{ target.y }}</p>
+            <p>Z: {{ target.z }}</p>
+          </div>
+          {% if not loop.last %}<div class="divider"></div>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- ─────────── Hazards ─────────── -->
+    <div class="section" id="obstacles-section">
+      <h2>Hazards</h2>
+      <div class="scrollable-list">
+        {% for obstacle in obstacles %}
+        <div class="item">
+          <div class="image-container">
+            <img src="{{ url_for('serve_image', filename=obstacle.image) }}"
+                 alt="Hazard {{ obstacle.id }}"
+                 onerror="this.src='{{ url_for('static', filename='images/placeholder.jpg') }}'">
+          </div>
+          {% if obstacle.name %}
+          <p style="text-align:center; font-weight:bold;">{{ obstacle.name }}</p>
+          {% endif %}
+          <div class="coordinates">
+            <p>X: {{ obstacle.x }}</p>
+            <p>Y: {{ obstacle.y }}</p>
+            <p>Z: {{ obstacle.z }}</p>
+          </div>
+          {% if not loop.last %}<div class="divider"></div>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- ─────────── Camera & Controls ─────────── -->
+    <div class="section" id="controls-section">
+      <div class="camera-box">
+        <h2>Camera View</h2>
+        <div class="camera-feed">
+          <img src="{{ url_for('video_feed') if video_feed else url_for('static', filename='images/camera_placeholder.jpg') }}"
+               alt="Camera Feed">
+        </div>
+      </div>
+      <div class="buttons">
+        <button class="manual-btn">Manual</button>
+        <button class="start-btn">Start</button>
+        <button class="scan-btn">Scan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────── Scripts ─────────── -->
+  <script>
+  /* ── helpers ───────────────────────────────────────────── */
+  const $ = (sel, ctx=document) => ctx.querySelector(sel);
+  const html = (s, ...v) => s.reduce((a, c, i) => a + c + (v[i] ?? ''), '');
+
+  async function postCommand(cmd) {
+    await fetch('/api/command', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({cmd})
+    });
+  }
+
+  /* ── render list item ──────────────────────────────────── */
+  function renderList(listEl, items) {
+    listEl.innerHTML = '';
+    items.forEach((obj, idx) => {
+      const title = obj.type === 'hazard' && obj.name
+                    ? `<p style="text-align:center;font-weight:bold;">${obj.name}</p>` : '';
+      const div = document.createElement('div');
+      div.className = 'item';
+      div.innerHTML = html`
+        <div class="image-container">
+          <img src="/images/${obj.image || 'placeholder.jpg'}"
+               alt="${obj.type} ${idx}"
+               onerror="this.src='/static/images/placeholder.jpg'">
+        </div>
+        ${title}
+        <div class="coordinates">
+          <p>X: ${obj.x ?? '?'}</p>
+          <p>Y: ${obj.y ?? '?'}</p>
+          <p>Z: ${obj.z ?? '?'}</p>
+        </div>
+        ${idx < items.length - 1 ? '<div class="divider"></div>' : ''}`;
+      listEl.appendChild(div);
+    });
+  }
+
+  /* ── poll /api/state every second for live updates ─────── */
+  async function pollState() {
+    try {
+      const res  = await fetch('/api/state');
+      const data = await res.json();
+      renderList($('#targets-section .scrollable-list'),
+                 data.detections.filter(d=>d.type==='survivor'));
+      renderList($('#obstacles-section .scrollable-list'),
+                 data.detections.filter(d=>d.type==='hazard'));
+      if (data.state && data.state.mode)
+        $('#controls-section h2').textContent =
+          `Camera View — ${data.state.mode}`;
+    } catch (e){ console.error('poll error', e); }
+  }
+  setInterval(pollState, 1000); pollState();
+
+  /* ── button / key handlers ─────────────────────────────── */
+  $('.manual-btn').onclick = () => postCommand('manual');
+  $('.start-btn' ).onclick = () => postCommand('start');
+  $('.scan-btn'  ).onclick = () => postCommand('scan');
+
+  document.addEventListener('keydown', e=>{
+    const k=e.key.toLowerCase();
+    if(!['w','a','s','d','q'].includes(k)) return;
+    fetch('/api/key',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({key:k})
+    });
+  });
+  </script>
+</body>
+</html>
