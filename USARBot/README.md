@@ -1,6 +1,6 @@
 # USARBot – GPT-Powered PiCrawler Urban Search & Rescue Robot
 
-**USARBot** is an advanced PiCrawler-based robot system enhanced with GPT-4 Vision, OpenCV, autonomous exploration, and a real-time web dashboard. Originally based on SunFounder's example code, this project expands it into a fully interactive search-and-rescue spider robot.
+**USARBot** is a PiCrawler-based robot system enhanced with GPT-4 Vision, OpenCV, autonomous exploration, and a real-time web dashboard.
 
 ---
 
