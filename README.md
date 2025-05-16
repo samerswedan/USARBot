@@ -4,7 +4,7 @@
 
 ---
 
-## 🚀 Features
+##  Features
 
 - 🤖 Autonomous exploration with ultrasonic-based obstacle avoidance  
 - 🧠 GPT-4o Vision integration with snapshot-based image understanding  
