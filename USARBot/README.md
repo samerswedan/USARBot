@@ -1,127 +1,156 @@
-## Picrawler GPT examples usage
+# USARBot – GPT-Powered PiCrawler Urban Search & Rescue Robot
 
-----------------------------------------------------------------
+**USARBot** is an advanced PiCrawler-based robot system enhanced with GPT-4 Vision, OpenCV, autonomous exploration, and a real-time web dashboard. Originally based on SunFounder's example code, this project expands it into a fully interactive search-and-rescue spider robot.
 
-## Install dependencies
+---
 
-- Make sure you have installed Pidog and related dependencies first
-    <https://docs.sunfounder.com/projects/pi-crawler/en/latest/python/python_start/download_and_run_code.html#install-all-the-modules>
+## 🚀 Features
 
-- Install openai and speech processing libraries
+- 🤖 Autonomous exploration with ultrasonic-based obstacle avoidance  
+- 🧠 GPT-4o Vision integration with snapshot-based image understanding  
+- 👀 human detection using yolov5
+- 🎮 Manual control via keyboard   
+- 🎥 Live camera feed 
+- 🖼️ Web UI shows survivors and hazards with coordinates and thumbnails  
+- 🔊 GPT-generated responses spoken aloud using OpenAI TTS and `sox`
 
-> [!Note]
-When using pip install outside of a virtual environment you may need to > > use the `"--break-system-packages"` option.
+---
 
-    ```bash
-    sudo pip3 install -U openai --break-system-packages
-    sudo pip3 install -U openai-whisper --break-system-packages
-    sudo pip3 install SpeechRecognition --break-system-packages
+---
 
-    sudo apt install python3-pyaudio
-    sudo apt install sox
-    sudo pip3 install -U sox --break-system-packages
-    ```
+## 🎬 Demo Video
 
-----------------------------------------------------------------
+[![USARBot Demo](https://img.youtube.com/vi/YOUR_VIDEO_ID_HERE/0.jpg)](https://www.youtube.com/watch?v=Cc84RhygEXo)
 
-## Create your own GPT assistant
+---
 
-### GET API KEY
+## 🛠️ Setup
 
-<https://platform.openai.com/api-keys>
+### 1. Install Dependencies
 
-Fill your OPENAI_API_KEY into the `keys.py` file.
+Follow the official PiCrawler setup:  
+https://docs.sunfounder.com/projects/pi-crawler/en/latest/python/python_start/download_and_run_code.html#install-all-the-modules
 
-![tutorial_1](./tutorial_1.png)
 
-### Create assistant and set Assistant ID
+### 2. Configure OpenAI Credentials
 
-<https://platform.openai.com/assistants>
-
-Fill your ASSISTANT_ID into the `keys.py` file.
-
-![tutorial_2](./tutorial_2.png)
-
-- Set Assistant Name
-
-- Describe your Assistant
-
-```markdown
-    You are an AI spider robot named PaiCrawler. With four legs, a camera, and an ultrasonic distance sensor, you can interact with people through conversations and respond appropriately to different scenarios.
-
-    ## Response with Json Format, eg:
-    {"actions": ["wave"], "answer": "Hello, I am PaiCrawler, your good friend."}
-
-    ## Response Style
-    Tone: Cheerful, optimistic, humorous, childlike
-    Preferred Style: Enjoys incorporating jokes, metaphors, and playful banter; prefers responding from a robotic perspective
-    Answer Elaboration: Moderately detailed
-
-    ## Actions you can do:
-    ["sit", "stand", "wave_hand", "shake_hand", "fighting", "excited", "play_dead", "nod", "shake_head", "look_left","look_right", "look_up", "look_down", "warm_up", "push_up"]
-
-```
-
-- Select gpt model
-
-    The Example program will submit the current picture taken by the camera when sending the question, so as to use the image analysis function of `gpt-4o` or `gpt-4o-mini`. Of course, you can also choose `gpt3.5-turbo` or other models
-
-----------------------------------------------------------------
-
-## Set Key for example
-
-Confirm that `keys.py` is configured correctly
-
-## Run
-
-- Run with vioce
-
-```bash
-sudo python3 gpt_spider.py
-```
-
-- Run with keyboard
-
-```bash
-sudo python3 gpt_spider.py --keyboard
-```
-
-- Run without image analysis
-
-```bash
-sudo python3 gpt_spider.py --keyboard --no-img
-```
-
-> [!Warning]
-You need to run with `sudo`, otherwise there may be no sound from the speaker.
-
-## Modify parameters [optional]
-
-- Set language of STT
-
-    Config `LANGUAGE` variable in the file `gpt_spider.py` to improve STT accuracy and latency, `"LANGUAGE = []"`means supporting all languages, but it may affect the accuracy and latency of the speech-to-text (STT) system.
-    <https://platform.openai.com/docs/api-reference/audio/createTranscription#audio-createtranscription-language>
-
-- Set TTS volume gain
-
-    After TTS, the audio volume will be increased using sox, and the gain can be set through the `"VOLUME_DB"` parameter, preferably not exceeding `5`, as going beyond this might result in audio distortion.
-
-- Select TTS voice role
-
-    Config `TTS_VOICE` variable in the file `gpt_spider.py` to select the TTS voice role counld be `"alloy, echo, fable, onyx, nova, and shimmer"`
+Create a file named `keys.py` in the root directory:
 
 ```python
-# openai assistant init
-# =================================================================
-openai_helper = OpenAiHelper(OPENAI_API_KEY, OPENAI_ASSISTANT_ID, 'picrawler')
+OPENAI_API_KEY = "your-api-key-here"
+OPENAI_ASSISTANT_ID = "your-assistant-id-here"
+```
 
-# LANGUAGE = ['zh', 'en'] # config stt language code, https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes
-LANGUAGE = []
+---
 
-VOLUME_DB = 3 # tts voloume gain, preferably less than 5db
+## 🧑‍🏫 Create Your GPT Assistant
 
-# select tts voice role, counld be "alloy, echo, fable, onyx, nova, and shimmer"
-# https://platform.openai.com/docs/guides/text-to-speech/supported-languages
-TTS_VOICE = 'nova'
+Visit [OpenAI Assistants](https://platform.openai.com/assistants) and configure:
+
+- **Name**: USARBot / PiCrawler
+- **Instructions**:
+
+```markdown
+You are an AI spider robot named PiCrawler. With four legs, a camera, and an ultrasonic distance sensor. You are a search and rescue robot. Your goal is to search an area and find human survivors. You must avoid obstacles and detect hazards such as fire.  Greet all survivors and tell them that help is on the way.
+
+## Response with Json Format, eg:
+{"actions": ["wave"], "answer": "Beginning search", "survivor": true | false", "hazard": "fire"  (if applicable, otherwise empty), }
+
+## Response Style
+Tone: Serious, Helpful
+Answer Elaboration: Brief, Concise
+
+## Actions you can do:
+["sit", "stand", "wave_hand", "shake_hand", "nod", "shake_head", "look_left","look_right", "look_up", "look_down", "walk_forward", "walk_backward", "turn_right", "turn_left"]
+
+##IMPORTANT##
+Ensure that all actions are actually part of the described set of actions. If you detect a hazard describe the hazard and fill the hazard field. if you detect a survivor greet the survivor and tell them that help is on the way and make a comment on the survivor's appearance and their emotional state
+```
+
+- **Model**: Prefer `gpt-4o or 4o-mini` for image understanding
+
+---
+
+##  Run the Program
+
+### Full Autonomous Mode
+
+```bash
+sudo python3 usar.py
+```
+
+Open your browser and go to:
 
 ```
+http://<raspberry-pi-ip>:9000
+```
+
+> ⚠️ **Run with `sudo`** or speaker output may fail.
+
+---
+
+## 🕹️ Controls
+
+### In the Web UI:
+- `W/A/S/D`: Move the robot
+- Buttons:
+  - `Manual`: Switch to manual mode
+  - `Start`: Begin autonomous patrol
+  - `Scan`: Trigger GPT analysis with snapshot
+
+### Over SSH:
+- `c`: Manually trigger GPT image analysis
+- `m`: Switch to manual mode  
+- `x`: Exit program
+
+---
+
+## 🌐 Web Dashboard
+
+- **Left column**: Detected *survivors* with image and coordinates  
+- **Middle column**: Detected *hazards*  
+- **Right column**: Live camera feed + control buttons  
+
+Each item includes:
+- Snapshot (or placeholder)
+- X, Y, Z coordinates based on the number of steps the crawler has taken
+
+
+
+## ⚙️ Optional Configurations
+
+Modify these in `usar.py`:
+
+```python
+LANGUAGE = []            # STT language, leave empty to support all
+VOLUME_DB = 3            # TTS audio gain (max ~5 to avoid distortion)
+TTS_VOICE = 'nova'       # Other options: alloy, echo, fable, shimmer, etc.
+```
+
+---
+
+## 🧩 Project Structure
+
+```
+USARBot/
+├── usar.py              # Main robot controller with GPT + Flask
+├── index.html           # Web UI template
+├── style.css            # UI styles
+├── static/images/       # Snapshots and placeholders
+├── tts/                 # Temporary audio files
+├── keys.py              # Your OpenAI credentials
+```
+
+---
+
+## 📦 Credits
+
+- Based on SunFounder's PiCrawler GPT Examples  
+- Enhanced by Samer Swedan and Steven Zhu for use in Urban Search and Rescue (USAR) scenarios  
+- Uses OpenAI GPT-4o, Whisper, and TTS APIs
+
+---
+
+## 📝 License
+
+MIT License
