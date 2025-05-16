@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('templates/index.html')          # your uploaded template
+    return render_template('templates/index.html')         
 
 # --- REST endpoints -------------------------------------------------
 @app.route('/api/state')
@@ -19,7 +19,7 @@ def api_state():
 @app.route('/api/command', methods=['POST'])
 def api_command():
     data = request.get_json(force=True)
-    bridge.send_command(data)                     # e.g. {"cmd":"forward"}
+    bridge.send_command(data)                     
     return jsonify({"ok": True})
 
 # run only when launched directly
