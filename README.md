@@ -55,7 +55,7 @@ OPENAI_ASSISTANT_ID = "your-assistant-id-here"
 
 ---
 
-## 🧑‍🏫 Create Your GPT Assistant
+##  Create Your GPT Assistant
 
 Visit [OpenAI Assistants](https://platform.openai.com/assistants) and configure:
 
@@ -140,7 +140,7 @@ TTS_VOICE = 'nova'       # Other options: alloy, echo, fable, shimmer, etc.
 
 ---
 
-## 🧩 Project Structure
+##  Project Structure
 
 ```
 USARBot/
@@ -154,7 +154,7 @@ USARBot/
 
 ---
 
-## 📦 Credits
+##  Credits
 
 - Based on SunFounder's PiCrawler GPT Examples  
 - Enhanced by Samer Swedan and Steven Zhu for use in Urban Search and Rescue (USAR) scenarios  
