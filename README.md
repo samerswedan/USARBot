@@ -8,7 +8,7 @@
 
 - 🤖 Autonomous exploration with ultrasonic-based obstacle avoidance  
 - 🧠 GPT-4o Vision integration with snapshot-based image understanding  
-- 👀 human detection using yolov5
+- 👀 Human detection using yolov5
 - ⌨️ Manual control via keyboard   
 - 🎥 Live camera feed 
 - 🖼️ Web UI shows survivors and hazards with coordinates and thumbnails  
