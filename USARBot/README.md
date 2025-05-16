@@ -67,13 +67,12 @@ Answer Elaboration: Brief, Concise
 Ensure that all actions are actually part of the described set of actions. If you detect a hazard describe the hazard and fill the hazard field. if you detect a survivor greet the survivor and tell them that help is on the way and make a comment on the survivor's appearance and their emotional state
 ```
 
-- **Model**: Prefer `gpt-4o or 4o-mini` for image understanding
+- **Model**: Use `gpt-4o or 4o-mini` for image understanding
 
 ---
 
 ##  Run the Program
 
-### Full Autonomous Mode
 
 ```bash
 sudo python3 usar.py
@@ -151,6 +150,4 @@ USARBot/
 
 ---
 
-## 📝 License
 
-MIT License
