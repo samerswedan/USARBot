@@ -31,7 +31,19 @@
 Follow the official PiCrawler setup:  
 [Setup](https://docs.sunfounder.com/projects/pi-crawler/en/latest/python/python_start/install_all_modules.html#install-all-modules)
 
+Then install required Python packages:
 
+```bash
+pip3 install openai
+pip3 install openai-whisper
+pip3 install -U sox
+```
+
+```bash
+sudo apt install python3-pyaudio
+sudo apt install sox
+```
+---
 ### 2. Configure OpenAI Credentials
 
 Create a file named `keys.py` in the root directory:
