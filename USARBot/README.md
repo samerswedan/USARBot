@@ -29,7 +29,7 @@
 ### 1. Install Dependencies
 
 Follow the official PiCrawler setup:  
-https://docs.sunfounder.com/projects/pi-crawler/en/latest/python/python_start/download_and_run_code.html#install-all-the-modules
+[Setup](https://docs.sunfounder.com/projects/pi-crawler/en/latest/python/python_start/install_all_modules.html#install-all-modules)
 
 
 ### 2. Configure OpenAI Credentials
